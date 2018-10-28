@@ -5,11 +5,16 @@ using UnityEngine.UI;
 
 public class ModelControl : MonoBehaviour {
 
+	public static ModelControl current;
+
 	public GameObject myModel;
 	public Text coinValue;
 
 	public AudioSource heartBeat;
 	public AudioSource coinSound;
+
+	public bool inPlaying = false;
+	int closetNumTime = 0;
 
 	int nowCoin = 0;
 
@@ -21,6 +26,10 @@ public class ModelControl : MonoBehaviour {
 	float nowTime = 0;
 	delegate void StoreAction();
 	event StoreAction storeAction;
+
+	void Awake(){
+		current = this;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +43,7 @@ public class ModelControl : MonoBehaviour {
 
 		nowTime = Time.time;
 
+		//ASync action need this area
 		if (storeAction != null) {
 			storeAction ();
 			storeAction = null;
@@ -45,28 +55,31 @@ public class ModelControl : MonoBehaviour {
 
 		if (Time.time < modelCoinEffectTime) {
 			//Coin in and effect Time
+			inPlaying = true;
 
 			if (Time.time > modelResumeTime) {
 				// Model will be show
 				heartBeat.volume = nowAlpha;
 				myModel.GetComponent<Renderer> ().material.color = new Color (0, 0, 0, Mathf.Lerp (nowAlpha, 0, modelFadeTime * Time.deltaTime));
 				//myModel.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+
 				//Debug.Log ("keep show : " + myModel.GetComponent<Renderer>().material.color.a);
-				//Debug.Log ("keep show");
 
 			} else {
 				//Model will be disapear
 				heartBeat.volume = nowAlpha;
 				myModel.GetComponent<Renderer> ().material.color = new Color (0, 0, 0, Mathf.Lerp (nowAlpha, 1, modelFadeTime * Time.deltaTime));
 				//myModel.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 0);
-				//Debug.Log ("keep disapear : " + + myModel.GetComponent<Renderer>().material.color.a);
-				//Debug.Log ("keep disapear");
+
+				//Debug.Log ("keep disapear : " + myModel.GetComponent<Renderer>().material.color.a);
 
 			}
 		} else {
 			// no coin add in , so sound and model disapear
+			inPlaying = false;
 			heartBeat.volume = 0;
 			myModel.GetComponent<Renderer> ().material.color = new Color (0, 0, 0, Mathf.Lerp (nowAlpha, 1, modelFadeTime * Time.deltaTime));
+
 			//Debug.Log ("keep disapear");
 		}
 	}
@@ -78,8 +91,7 @@ public class ModelControl : MonoBehaviour {
 		if (nowCoin >= 2) {
 			nowCoin = 0;
 
-			modelCoinEffectTime = nowTime + 50;
-			modelResumeTime = nowTime + 5;
+			modelCoinEffectTime = nowTime + 65;
 
 			storeAction += delegate() {
 				myModel.GetComponent<Renderer> ().material.color = new Color (0, 0, 0, -1);
@@ -100,9 +112,19 @@ public class ModelControl : MonoBehaviour {
 		float number = 0;
 		bool conversionSuccessful = float.TryParse(data, out number);
 
-		if (conversionSuccessful) {
-			modelResumeTime = nowTime + 4;
+		if (conversionSuccessful && number > 1) {
+			closetNumTime++;
+			storeAction += delegate() {
+				Invoke ("ReduceClosetTime", 5f);
+			};
+
+			if(closetNumTime > 2)
+				modelResumeTime = nowTime + 2;
 		}
+	}
+
+	void ReduceClosetTime(){
+		closetNumTime--;
 	}
 
 }

@@ -781,9 +781,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: f735196c-e3cc-444e-8760-62c249457888
-  projectName: "\u6D6E\u7A7A\u6295\u5F71"
-  organizationId: lanyishan
+  cloudProjectId: caa55e5f-f486-4ed7-9e76-e71fc6a64333
+  projectName: "\u4E73\u725B\u6295\u5F71_1019"
+  organizationId: larchrono
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
