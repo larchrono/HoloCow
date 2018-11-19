@@ -91,7 +91,7 @@ public class ModelControl : MonoBehaviour {
 		if (nowCoin >= 2) {
 			nowCoin = 0;
 
-			modelCoinEffectTime = nowTime + 65;
+			modelCoinEffectTime = nowTime + 65; 	
 
 			storeAction += delegate() {
 				myModel.GetComponent<Renderer> ().material.color = new Color (0, 0, 0, -1);
